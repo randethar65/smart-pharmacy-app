@@ -1,0 +1,74 @@
+import 'package:dio/dio.dart';
+import 'package:get_it/get_it.dart';
+import 'package:smart_pharmacy/core/service/api_services.dart';
+import 'package:smart_pharmacy/core/service/dio_factory.dart';
+import 'package:smart_pharmacy/feature/auth/data/repos/auth_repo_impl.dart';
+import 'package:smart_pharmacy/feature/auth/domain/repos/auth_repos.dart';
+import 'package:smart_pharmacy/feature/auth/presentation/manger/forget_password/forget_password_cubit.dart';
+import 'package:smart_pharmacy/feature/auth/presentation/manger/login/login_cubit.dart';
+import 'package:smart_pharmacy/feature/auth/presentation/manger/register/register_cubit.dart';
+import 'package:smart_pharmacy/feature/home/data/repos/category_repos_impl.dart';
+import 'package:smart_pharmacy/feature/home/data/repos/product_repos_imple.dart';
+import 'package:smart_pharmacy/feature/home/domain/repos/category_repos.dart';
+import 'package:smart_pharmacy/feature/home/domain/repos/product_repos.dart';
+import 'package:smart_pharmacy/feature/home/presentation/manger/ProductDetail/product_details_cubit.dart';
+import 'package:smart_pharmacy/feature/home/presentation/manger/category/category_cubit.dart';
+import 'package:smart_pharmacy/feature/home/presentation/manger/Product/product_cubit.dart';
+import 'package:smart_pharmacy/feature/cart/data/repos_imple/cart_repos_imple.dart';
+import 'package:smart_pharmacy/feature/cart/domain/repos/cart_repos.dart';
+import 'package:smart_pharmacy/feature/cart/presentation/manger/cubit/cart_cubit.dart';
+import 'package:smart_pharmacy/feature/Checkout/data/repos_imple.dart/checkout_repos_imple.dart';
+import 'package:smart_pharmacy/feature/Checkout/domain/repos/checkout_repos.dart';
+import 'package:smart_pharmacy/feature/Checkout/presentation/manger/cubit/checkout_cubit.dart';
+
+final getIt = GetIt.instance;
+
+Future<void> setup() async {
+  // Dio + ApiService
+  final Dio dio = await DioFactory.getDio();
+  getIt.registerSingleton<ApiService>(ApiService(dio: dio));
+
+  // Repo — مسجّل على النوع المجرّد AuthRepo
+  getIt.registerLazySingleton<AuthRepo>(
+    () => AuthRepoImpl(getIt<ApiService>()),
+  );
+  getIt.registerLazySingleton<CategoryRepos>(
+    () => CategoryReposImpl(apiService: getIt<ApiService>()),
+  );
+  getIt.registerLazySingleton<ProductRepos>(
+    () => ProductReposImpl(apiService: getIt<ApiService>()),
+  );
+  getIt.registerLazySingleton<CartRepos>(
+    () => CartReposImple(apiService: getIt<ApiService>()),
+  );
+  getIt.registerLazySingleton<CheckoutRepos>(
+    () => CheckoutReposImple(getIt<ApiService>()),
+  );
+
+  // Cubits — نسخة جديدة كل مرة تُطلب
+  getIt.registerFactory<LoginCubit>(
+    () => LoginCubit(authRepo: getIt<AuthRepo>()),
+  );
+  getIt.registerFactory<RegisterCubit>(
+    () => RegisterCubit(authRepo: getIt<AuthRepo>()),
+  );
+  getIt.registerFactory<ForgetPasswordCubit>(
+    () => ForgetPasswordCubit(authRepo: getIt<AuthRepo>()),
+  );
+  getIt.registerFactory<CategoryCubit>(
+    () => CategoryCubit(categoryRepos: getIt<CategoryRepos>()),
+  );
+  getIt.registerFactory<ProductCubit>(
+    () => ProductCubit(productRepos: getIt<ProductRepos>()),
+  );
+   getIt.registerFactory<ProductDetailsCubit>(
+    () => ProductDetailsCubit(productRepos: getIt<ProductRepos>()),
+  );
+  // Singleton: the cart is one shared thing across the whole app.
+  getIt.registerLazySingleton<CartCubit>(
+    () => CartCubit(cartRepos: getIt<CartRepos>()),
+  );
+  getIt.registerFactory<CheckoutCubit>(
+    () => CheckoutCubit(checkoutRepos: getIt<CheckoutRepos>()),
+  );
+}
