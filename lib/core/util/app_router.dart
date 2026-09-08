@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_pharmacy/core/DI/dependency_injection.dart';
-import 'package:smart_pharmacy/feature/Checkout/presentation/manger/cubit/checkout_cubit.dart';
+import 'package:smart_pharmacy/feature/Checkout/presentation/manger/checkout/checkout_cubit.dart';
+import 'package:smart_pharmacy/feature/Checkout/presentation/view/card_payment_redirect_view.dart';
 import 'package:smart_pharmacy/feature/Checkout/presentation/view/checkout_view.dart';
+import 'package:smart_pharmacy/feature/Checkout/presentation/view/order_placed_success.dart';
+import 'package:smart_pharmacy/feature/Checkout/presentation/view/payment_cancelled_view.dart';
+import 'package:smart_pharmacy/feature/Checkout/presentation/view/payment_success_view.dart';
+import 'package:smart_pharmacy/feature/Checkout/presentation/view/rx_required_view.dart';
+import 'package:smart_pharmacy/feature/Checkout/presentation/manger/prescription/cubit/prescription_cubit.dart';
+import 'package:smart_pharmacy/feature/Checkout/presentation/view/upload_prescription_view.dart';
 import 'package:smart_pharmacy/feature/auth/presentation/manger/forget_password/forget_password_cubit.dart';
 import 'package:smart_pharmacy/feature/auth/presentation/manger/login/login_cubit.dart';
 import 'package:smart_pharmacy/feature/auth/presentation/manger/register/register_cubit.dart';
@@ -17,6 +24,8 @@ import 'package:smart_pharmacy/feature/home/presentation/manger/category/categor
 import 'package:smart_pharmacy/feature/home/presentation/manger/Product/product_cubit.dart';
 import 'package:smart_pharmacy/feature/home/presentation/views/home_view.dart';
 import 'package:smart_pharmacy/feature/home/presentation/views/widgets/Product_details_consumer.dart';
+import 'package:smart_pharmacy/feature/order/presentation/manger/cubit/order_cubit.dart';
+import 'package:smart_pharmacy/feature/order/presentation/views/order_view.dart';
 
 Route<dynamic>? onGenerateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -103,7 +112,82 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
         ),
       );
 
+    case OrderPlacedSuccess.routName:
+      final args = settings.arguments;
+      // After a hot restart / state restoration the arguments are gone —
+      // don't crash, just send the user home.
+      if (args is! Map) {
+        return onGenerateRoute(const RouteSettings(name: HomeView.routeName));
+      }
+      return MaterialPageRoute(
+        settings: settings,
+        builder: (_) => OrderPlacedSuccess(
+          orderId: args['orderId'] as int,
+          total: (args['total'] as num).toDouble(),
+        ),
+      );
 
+    case PaymentSuccessView.routeName:
+      return MaterialPageRoute(
+        settings: settings,
+        builder: (_) => const PaymentSuccessView(),
+      );
+    case CardPaymentRedirectView.routeName:
+      final args = settings.arguments;
+      
+      if (args is! Map) {
+        return onGenerateRoute(const RouteSettings(name: HomeView.routeName));
+      }
+      return MaterialPageRoute(
+        settings: settings,
+        builder: (_) =>  CardPaymentRedirectView(
+        
+          checkoutUrl: args['checkoutUrl'] as String ,
+          amount:(args['amount'] as num).toDouble(),
+
+        ),
+      );
+
+    case PaymentCancelledView.routeName:
+      return MaterialPageRoute(
+        settings: settings,
+        builder: (_) => const PaymentCancelledView(),
+      );
+
+    case RxRequiredView.routeName:
+      {
+        final args = settings.arguments;
+        if (args is! Map) {
+          return onGenerateRoute(const RouteSettings(name: HomeView.routeName));
+        }
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => RxRequiredView(orderId: args['orderId'] as int),
+        );
+      }
+
+    case UploadPrescriptionView.routeName:
+      {
+        final args = settings.arguments;
+        if (args is! Map) {
+          return onGenerateRoute(const RouteSettings(name: HomeView.routeName));
+        }
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => BlocProvider(
+            create: (_) => getIt<PrescriptionCubit>(),
+            child: UploadPrescriptionView(orderId: args['orderId'] as int),
+          ),
+        );
+      }
+    case OrderView.routName:
+      return MaterialPageRoute(
+        settings: settings,
+        builder: (_) => BlocProvider(
+          create: (_) => getIt<OrderCubit>(),
+          child: const OrderView(),
+        ),
+      );
     default:
       return null;
   }

@@ -43,4 +43,23 @@ class CheckoutReposImple implements CheckoutRepos {
       return Left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, CheckoutResponse>> confirmPayment(
+    String sessionId,
+  ) async {
+    try {
+      final data = await apiService.get(
+        endPoint: '${ApiConstants.checkout}/success',
+        queryParameters: {'sessionId': sessionId},
+      );
+      return Right(
+        CheckoutResponse.fromJson(data as Map<String, dynamic>),
+      );
+    } on DioException catch (e) {
+      return Left(ServerFailure.fromDioException(e));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }

@@ -18,8 +18,14 @@ import 'package:smart_pharmacy/feature/cart/data/repos_imple/cart_repos_imple.da
 import 'package:smart_pharmacy/feature/cart/domain/repos/cart_repos.dart';
 import 'package:smart_pharmacy/feature/cart/presentation/manger/cubit/cart_cubit.dart';
 import 'package:smart_pharmacy/feature/Checkout/data/repos_imple.dart/checkout_repos_imple.dart';
+import 'package:smart_pharmacy/feature/Checkout/data/repos_imple.dart/prescription_repos_imple.dart';
 import 'package:smart_pharmacy/feature/Checkout/domain/repos/checkout_repos.dart';
-import 'package:smart_pharmacy/feature/Checkout/presentation/manger/cubit/checkout_cubit.dart';
+import 'package:smart_pharmacy/feature/Checkout/domain/repos/prescription_repos.dart';
+import 'package:smart_pharmacy/feature/Checkout/presentation/manger/checkout/checkout_cubit.dart';
+import 'package:smart_pharmacy/feature/Checkout/presentation/manger/prescription/cubit/prescription_cubit.dart';
+import 'package:smart_pharmacy/feature/order/data/repos_Imple/order_repo_imple.dart';
+import 'package:smart_pharmacy/feature/order/domain/repos/order_repo.dart';
+import 'package:smart_pharmacy/feature/order/presentation/manger/cubit/order_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -43,6 +49,12 @@ Future<void> setup() async {
   );
   getIt.registerLazySingleton<CheckoutRepos>(
     () => CheckoutReposImple(getIt<ApiService>()),
+  );
+  getIt.registerLazySingleton<PrescriptionRepos>(
+    () => PrescriptionReposImple(apiService: getIt<ApiService>()),
+  );
+  getIt.registerLazySingleton<OrderRepo>(
+    () => OrderRepoImple(apiService: getIt<ApiService>()),
   );
 
   // Cubits — نسخة جديدة كل مرة تُطلب
@@ -70,5 +82,11 @@ Future<void> setup() async {
   );
   getIt.registerFactory<CheckoutCubit>(
     () => CheckoutCubit(checkoutRepos: getIt<CheckoutRepos>()),
+  );
+  getIt.registerFactory<PrescriptionCubit>(
+    () => PrescriptionCubit(prescriptionRepos: getIt<PrescriptionRepos>()),
+  );
+  getIt.registerFactory<OrderCubit>(
+    () => OrderCubit(orderRepo: getIt<OrderRepo>()),
   );
 }

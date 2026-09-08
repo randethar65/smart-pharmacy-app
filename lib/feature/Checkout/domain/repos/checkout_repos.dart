@@ -11,4 +11,9 @@ abstract class CheckoutRepos {
 
   /// Step 2 — Cash: finalises the order. Visa: returns a Stripe `checkoutUrl`.
   Future<Either<Failure, CheckoutResponse>> payOrder(int orderId);
+
+  /// Step 3 (Visa only) — after the Stripe page redirects back, verify the
+  /// payment with the backend using the Stripe `sessionId`. The backend checks
+  /// with Stripe and finalises the order.
+  Future<Either<Failure, CheckoutResponse>> confirmPayment(String sessionId);
 }

@@ -13,23 +13,33 @@ class ProductsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MasonryGridView.count(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-      crossAxisCount: 2,
-      mainAxisSpacing: 16,
-      crossAxisSpacing: 16,
-      itemCount: items.length,
-      itemBuilder: (context, index) => GestureDetector(
-        onTap: () {
-          Navigator.pushNamed(
-            context,
-          ProductDetailsConsumer.routeName,
-            arguments: items[index].id,
-          );
-        },
-        child: ProductItem(product: items[index])),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // MasonryGridView asserts on a non-positive cross-axis extent, which
+        // can happen for a frame during page transitions. Skip it until the
+        // width is real.
+        if (constraints.maxWidth < 100) return const SizedBox.shrink();
+
+        return MasonryGridView.count(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+          crossAxisCount: 2,
+          mainAxisSpacing: 16,
+          crossAxisSpacing: 16,
+          itemCount: items.length,
+          itemBuilder: (context, index) => GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                ProductDetailsConsumer.routeName,
+                arguments: items[index].id,
+              );
+            },
+            child: ProductItem(product: items[index]),
+          ),
+        );
+      },
     );
   }
 }

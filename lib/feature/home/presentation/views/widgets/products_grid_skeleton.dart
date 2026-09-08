@@ -12,23 +12,29 @@ class ProductsGridSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      // A subtle base/highlight pair (like AppColors.field → white) barely
-      // shows movement on a light page background — this pair is the
-      // standard, higher-contrast shimmer look.
-      baseColor: Colors.grey.shade300,
-      highlightColor: Colors.grey.shade100,
-      period: const Duration(milliseconds: 1200),
-      child: MasonryGridView.count(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-        crossAxisCount: 2,
-        mainAxisSpacing: 16,
-        crossAxisSpacing: 16,
-        itemCount: itemCount,
-        itemBuilder: (context, index) => const ProductItemSkeleton(),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 100) return const SizedBox.shrink();
+
+        return Shimmer.fromColors(
+          // A subtle base/highlight pair (like AppColors.field → white) barely
+          // shows movement on a light page background — this pair is the
+          // standard, higher-contrast shimmer look.
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          period: const Duration(milliseconds: 1200),
+          child: MasonryGridView.count(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+            crossAxisCount: 2,
+            mainAxisSpacing: 16,
+            crossAxisSpacing: 16,
+            itemCount: itemCount,
+            itemBuilder: (context, index) => const ProductItemSkeleton(),
+          ),
+        );
+      },
     );
   }
 }

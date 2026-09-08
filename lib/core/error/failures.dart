@@ -37,8 +37,20 @@ class ServerFailure extends Failure {
   /// يعالج ردود الأخطاء (4xx / 5xx).
   /// الباك اند يرجّع `{ "message": "...", "success": false }` فنحاول نقرأها.
   factory ServerFailure._fromResponse(int? statusCode, dynamic data) {
-    final serverMessage =
-        (data is Map && data['message'] is String) ? data['message'] as String : null;
+    // Backend error bodies come in three shapes:
+    //  - a bare JSON string  ("City is required.")   ← Checkout 400s
+    //  - { "message": "..." }                        ← most endpoints
+    //  - { "detail": "..." }                         ← ProblemDetails
+    final String? serverMessage;
+    if (data is String && data.trim().isNotEmpty) {
+      serverMessage = data.trim();
+    } else if (data is Map && data['message'] is String) {
+      serverMessage = data['message'] as String;
+    } else if (data is Map && data['detail'] is String) {
+      serverMessage = data['detail'] as String;
+    } else {
+      serverMessage = null;
+    }
 
     switch (statusCode) {
       case 400:

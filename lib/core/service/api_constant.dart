@@ -16,4 +16,6 @@ class ApiConstants {
       static const String removeFromCart = "/api/Cart";
     static const String updateQuantityCart = "/api/Cart";
     static const String checkout = "/api/Checkout";
+     static const String  uploadPrescription="/api/Prescriptions";
+      static const String  userOrders="/api/Orders";
 }

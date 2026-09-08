@@ -6,9 +6,11 @@ import 'package:smart_pharmacy/core/Helper/sheard_pref_healper.dart';
 import 'package:smart_pharmacy/core/util/app_navigator.dart';
 import 'package:smart_pharmacy/core/util/app_router.dart';
 import 'package:smart_pharmacy/core/util/app_theme.dart';
+import 'package:smart_pharmacy/feature/Checkout/presentation/view/payment_cancelled_view.dart';
 import 'package:smart_pharmacy/feature/auth/presentation/views/login_view.dart';
 import 'package:smart_pharmacy/feature/cart/presentation/manger/cubit/cart_cubit.dart';
 import 'package:smart_pharmacy/feature/home/presentation/views/home_view.dart';
+import 'package:smart_pharmacy/feature/order/presentation/views/order_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +41,7 @@ class SmartPharmacy extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         navigatorKey: navigatorKey,
         onGenerateRoute: onGenerateRoute,
-        initialRoute: startRoute,
+        initialRoute: OrderView.routName,
         title: 'Smart Pharmacy',
         theme: AppTheme.light,
       ),
