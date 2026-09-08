@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_pharmacy/core/util/app_colors.dart';
 import 'package:smart_pharmacy/core/widgets/filter_pills_row.dart';
 import 'package:smart_pharmacy/feature/Checkout/presentation/view/widget/header.dart';
-import 'package:smart_pharmacy/feature/order/presentation/manger/cubit/order_cubit.dart';
+import 'package:smart_pharmacy/feature/order/presentation/manger/order/order_cubit.dart';
+import 'package:smart_pharmacy/feature/order/presentation/views/order_details_view.dart';
 import 'package:smart_pharmacy/feature/order/presentation/widgets/order_item.dart';
 
 class OrderView extends StatefulWidget {
@@ -93,8 +94,8 @@ class _OrderViewState extends State<OrderView> {
                     itemBuilder: (_, i) => OrderItem(
                       order: orders[i],
                       onTap: () {
-                        // TODO: Navigator.pushNamed(context,
-                        //   OrderDetailsView.routeName, arguments: orders[i].id);
+                        Navigator.pushNamed(context,
+                          OrderDetailsView.routName, arguments: orders[i].id);
                       },
                     ),
                   ),

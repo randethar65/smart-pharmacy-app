@@ -14,6 +14,11 @@ class OrderResponse {
   final List<OrderItemResponse> items;
   final double total;
 
+  /// How many prescription images have been uploaded for this order.
+  /// 0 while `orderStatus == "AwaitingPrescription"` means the user still
+  /// has to upload one; > 0 means it's uploaded and under pharmacist review.
+  final int prescriptionsCount;
+
   OrderResponse({
     required this.id,
     required this.orderDate,
@@ -24,7 +29,14 @@ class OrderResponse {
     required this.street,
     required this.items,
     required this.total,
+    required this.prescriptionsCount,
   });
+
+  bool get needsPrescriptionUpload =>
+      orderStatus == 'AwaitingPrescription' && prescriptionsCount == 0;
+
+  bool get prescriptionUnderReview =>
+      orderStatus == 'AwaitingPrescription' && prescriptionsCount > 0;
 
   factory OrderResponse.fromJson(Map<String, dynamic> json) => OrderResponse(
         id: json['id'] as int,
@@ -38,6 +50,7 @@ class OrderResponse {
             .map((e) => OrderItemResponse.fromJson(e as Map<String, dynamic>))
             .toList(),
         total: (json['total'] as num).toDouble(),
+        prescriptionsCount: json['prescriptionsCount'] as int? ?? 0,
       );
 
   /// The endpoint returns a bare JSON array.

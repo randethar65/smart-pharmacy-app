@@ -25,7 +25,8 @@ import 'package:smart_pharmacy/feature/Checkout/presentation/manger/checkout/che
 import 'package:smart_pharmacy/feature/Checkout/presentation/manger/prescription/cubit/prescription_cubit.dart';
 import 'package:smart_pharmacy/feature/order/data/repos_Imple/order_repo_imple.dart';
 import 'package:smart_pharmacy/feature/order/domain/repos/order_repo.dart';
-import 'package:smart_pharmacy/feature/order/presentation/manger/cubit/order_cubit.dart';
+import 'package:smart_pharmacy/feature/order/presentation/manger/order/order_cubit.dart';
+import 'package:smart_pharmacy/feature/order/presentation/manger/order_detail.dart/cubit/order_detail_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -88,5 +89,8 @@ Future<void> setup() async {
   );
   getIt.registerFactory<OrderCubit>(
     () => OrderCubit(orderRepo: getIt<OrderRepo>()),
+  );
+   getIt.registerFactory<OrderDetailCubit>(
+    () => OrderDetailCubit(orderRepo: getIt<OrderRepo>()),
   );
 }

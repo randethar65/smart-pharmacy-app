@@ -6,7 +6,9 @@ class AppColors {
   static const Color primary       = Color(0xFF0F766E); // deep teal-green
   static const Color primaryTint   = Color(0xFFA3FAEF);
   static const Color primarySurface= Color(0xFFF0FDFA);
-  static const Color accent        = Color(0xFFFE7766); // warm coral — Rx badge
+  static const Color accent        = Color(0xFFFE7766); 
+static const Color lightPink = Color(0xFFFFDAD6);
+  // warm coral — Rx badge
     static const Color accentText        = Color(0xFF710E09); 
   static const Color infoSurface   = Color(0xFFF1F5F9); 
  

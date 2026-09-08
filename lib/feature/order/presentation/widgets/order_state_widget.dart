@@ -19,8 +19,8 @@ class OrderStateWidget extends StatelessWidget {
   static const _blueBg = Color(0xFFD8EDFF);
   static const _blueFg = Color(0xFF0070A0);
   // coral — needs the user's attention
-  static const _rxBg = Color(0xFFFFEAE3);
-  static const _rxFg = Color(0xFFE4572E);
+  static const _rxBg = Color(0xFFFE7766);
+  static const _rxFg = Color(0xFF710E09);
   // green
   static const _greenBg = Color(0xFFE3F9E5);
   static const _greenFg = Color(0xFF207544);

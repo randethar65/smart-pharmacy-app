@@ -23,4 +23,18 @@ class OrderRepoImple implements OrderRepo {
       return Left(ServerFailure(e.toString()));
     }
   }
+  
+  @override
+  Future<Either<Failure, OrderResponse>> getUserOrderDetails({required int id}) async {
+    try {
+      // GET /api/Orders/{id} returns a single order object.
+      final response =
+          await apiService.get(endPoint: "${ApiConstants.userOrders}/$id");
+      return Right(OrderResponse.fromJson(response as Map<String, dynamic>));
+    } on DioException catch (e) {
+      return Left(ServerFailure.fromDioException(e));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }

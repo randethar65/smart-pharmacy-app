@@ -24,8 +24,11 @@ import 'package:smart_pharmacy/feature/home/presentation/manger/category/categor
 import 'package:smart_pharmacy/feature/home/presentation/manger/Product/product_cubit.dart';
 import 'package:smart_pharmacy/feature/home/presentation/views/home_view.dart';
 import 'package:smart_pharmacy/feature/home/presentation/views/widgets/Product_details_consumer.dart';
-import 'package:smart_pharmacy/feature/order/presentation/manger/cubit/order_cubit.dart';
+import 'package:smart_pharmacy/feature/order/presentation/manger/order/order_cubit.dart';
+import 'package:smart_pharmacy/feature/order/presentation/manger/order_detail.dart/cubit/order_detail_cubit.dart';
+import 'package:smart_pharmacy/feature/order/presentation/views/order_details_view.dart';
 import 'package:smart_pharmacy/feature/order/presentation/views/order_view.dart';
+import 'package:smart_pharmacy/feature/order/presentation/views/prescription_status_view.dart';
 
 Route<dynamic>? onGenerateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -188,6 +191,33 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
           child: const OrderView(),
         ),
       );
+      case OrderDetailsView.routName:
+      {
+        final arg = settings.arguments;
+        if (arg is! int) {
+          return onGenerateRoute(const RouteSettings(name: HomeView.routeName));
+        }
+        return MaterialPageRoute(
+        settings: settings,
+        builder: (_) => BlocProvider(
+          create: (_) => getIt<OrderDetailCubit>(),
+            child: OrderDetailsView(idOrder: arg),
+        ),
+      );
+      }
+
+    case PrescriptionStatusView.routName:
+      {
+        // final arg = settings.arguments;
+        // if (arg is! int) {
+        //   return onGenerateRoute(const RouteSettings(name: HomeView.routeName));
+        // }
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => PrescriptionStatusView(),
+        );
+      }
+
     default:
       return null;
   }

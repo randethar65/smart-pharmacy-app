@@ -52,6 +52,7 @@ dependencies:
   smooth_page_indicator: ^3.0.0
   webview_flutter: ^4.14.1
   image_picker: ^1.2.3
+  easy_stepper: ^1.2.0
 
 dev_dependencies:
   flutter_test:

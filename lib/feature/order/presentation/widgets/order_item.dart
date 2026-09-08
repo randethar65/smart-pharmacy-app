@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_pharmacy/core/util/app_colors.dart';
+import 'package:smart_pharmacy/feature/Checkout/presentation/view/upload_prescription_view.dart';
 import 'package:smart_pharmacy/feature/order/data/Models/order_response.dart';
 import 'package:smart_pharmacy/feature/order/presentation/widgets/order_state_widget.dart';
 
@@ -95,6 +96,52 @@ class OrderItem extends StatelessWidget {
                 OrderStateWidget(status: order.orderStatus),
               ],
             ),
+            if (order.needsPrescriptionUpload) ...[
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () => Navigator.pushNamed(
+                    context,
+                    UploadPrescriptionView.routeName,
+                    arguments: {'orderId': order.id},
+                  ),
+                  icon: const Icon(Icons.upload_file, size: 18),
+                  label: const Text('Upload prescription'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.deepTeal,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    textStyle: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ] else if (order.prescriptionUnderReview) ...[
+              const SizedBox(height: 10),
+              const Row(
+                children: [
+                  Icon(Icons.hourglass_top,
+                      size: 14, color: AppColors.textSecondary),
+                  SizedBox(width: 6),
+                  Text(
+                    'Prescription under review',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
