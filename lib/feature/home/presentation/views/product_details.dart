@@ -3,7 +3,7 @@ import 'package:smart_pharmacy/core/util/app_colors.dart';
 import 'package:smart_pharmacy/feature/home/data/models/prodct_detail_model.dart';
 import 'package:smart_pharmacy/feature/home/presentation/views/widgets/bottom_bar.dart';
 import 'package:smart_pharmacy/feature/home/presentation/views/widgets/rx_badge.dart';
-import 'package:smart_pharmacy/feature/home/presentation/views/widgets/subImage_product.dart';
+import 'package:smart_pharmacy/feature/home/presentation/views/widgets/sub_image_product.dart';
 
 class ProductDetailsView extends StatelessWidget {
   const ProductDetailsView({super.key, required this.product});

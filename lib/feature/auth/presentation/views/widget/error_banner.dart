@@ -3,7 +3,7 @@ import 'package:smart_pharmacy/core/util/app_colors.dart';
 
 /// Dismissible red banner shown above the code field on failure.
 class ErrorBanner extends StatelessWidget {
-  const ErrorBanner({required this.text, required this.onClose});
+  const ErrorBanner({super.key, required this.text, required this.onClose});
 
   final String text;
   final VoidCallback onClose;

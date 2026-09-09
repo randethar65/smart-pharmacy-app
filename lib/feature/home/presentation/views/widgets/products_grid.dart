@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:smart_pharmacy/feature/home/data/models/product_model.dart';
 
-import 'package:smart_pharmacy/feature/home/presentation/views/widgets/Product_details_consumer.dart';
+import 'package:smart_pharmacy/feature/home/presentation/views/widgets/product_details_consumer.dart';
 import 'package:smart_pharmacy/feature/home/presentation/views/widgets/product_item.dart';
 
 

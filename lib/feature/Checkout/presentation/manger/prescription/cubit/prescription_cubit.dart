@@ -3,16 +3,17 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_pharmacy/feature/Checkout/data/models/upload_prescription_request.dart';
+import 'package:smart_pharmacy/feature/Checkout/data/models/upload_prescription_response.dart';
 import 'package:smart_pharmacy/feature/Checkout/domain/repos/prescription_repos.dart';
 
 part 'prescription_state.dart';
 
 class PrescriptionCubit extends Cubit<PrescriptionState> {
   PrescriptionCubit({required this.prescriptionRepos})
-      : super(PrescriptionInitial());
+    : super(PrescriptionInitial());
 
- final PrescriptionRepos prescriptionRepos;
-  //ببعت كل الصور يلي بدي ارفعهم وكلهم بدخلهم مره وحده 
+  final PrescriptionRepos prescriptionRepos;
+  //ببعت كل الصور يلي بدي ارفعهم وكلهم بدخلهم مره وحده
   /// Uploads every image for [orderId] — one request per file (the backend
   /// takes a single `IFormFile` per call). Stops at the first failure.
   Future<void> submit({
@@ -37,5 +38,14 @@ class PrescriptionCubit extends Cubit<PrescriptionState> {
     }
 
     emit(PrescriptionSuccess());
- }
+  }
+
+  Future<void> getOrderPrescriptions({required int id}) async {
+    emit(PrescriptionLoading());
+    final result = await prescriptionRepos.getOrderPrescriptions(id: id);
+    result.fold(
+      (error) => emit(PrescriptionFailure(error.message)),
+      (data) => emit(PrescriptionsOrderSuccess(result: data)),
+    );
+  }
 }

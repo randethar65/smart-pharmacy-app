@@ -17,6 +17,7 @@ import 'package:smart_pharmacy/feature/home/presentation/views/widgets/nav_widge
 import 'package:smart_pharmacy/feature/home/presentation/views/widgets/products_grid.dart';
 import 'package:smart_pharmacy/feature/home/presentation/views/widgets/products_grid_skeleton.dart';
 import 'package:smart_pharmacy/feature/home/presentation/views/widgets/search_text_form_filed.dart';
+import 'package:smart_pharmacy/feature/order/presentation/views/order_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -37,6 +38,10 @@ class _HomeViewState extends State<HomeView> {
     // are not built yet.
     if (index == 1) {
       Navigator.pushNamed(context, CartView.routeName);
+      return;
+    }
+    if(index == 2){
+ Navigator.pushNamed(context, OrderView.routName);
       return;
     }
     setState(() => _currentTab = index);

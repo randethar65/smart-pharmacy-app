@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:pinput/pinput.dart';
 import 'package:smart_pharmacy/core/util/app_colors.dart';
 import 'package:smart_pharmacy/core/widgets/button_app.dart';
 import 'package:smart_pharmacy/core/widgets/text_form_field_app.dart';

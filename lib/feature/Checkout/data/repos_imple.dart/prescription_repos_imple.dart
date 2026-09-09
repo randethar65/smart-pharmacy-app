@@ -34,4 +34,24 @@ class PrescriptionReposImple implements PrescriptionRepos {
       return Left(ServerFailure(e.toString()));
     }
   }
+  
+  @override
+  Future<Either<Failure, List<PrescriptionResponse>>> getOrderPrescriptions({
+    required int id,
+  }) async {
+    try {
+      final data = await apiService.get(
+        endPoint: '${ApiConstants.getOrderPrescriptions}/$id',
+      );
+      return Right(
+        PrescriptionResponse.listFromJson(data as List<dynamic>),
+      );
+    } on DioException catch (e) {
+      return Left(ServerFailure.fromDioException(e));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }
+
+

@@ -20,4 +20,7 @@ class ApiConstants {
   static const String uploadPrescription = "/api/Prescriptions";
   static const String userOrders = "/api/Orders";
   static const String userOrderDetails = "/api/Orders";
+   static const String getOrderPrescriptions = "/api/Prescriptions/order";
+  
+  static const String cancelOrder = "/api/Orders"; // + "/{id}/cancel"
 }

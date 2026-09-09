@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_pharmacy/core/util/app_colors.dart';
 import 'package:smart_pharmacy/feature/Checkout/presentation/view/upload_prescription_view.dart';
-import 'package:smart_pharmacy/feature/order/data/Models/order_response.dart';
+import 'package:smart_pharmacy/feature/order/data/models/order_response.dart';
 import 'package:smart_pharmacy/feature/order/presentation/widgets/order_state_widget.dart';
 
 /// One card in the orders list: number + date, item thumbnails, count,

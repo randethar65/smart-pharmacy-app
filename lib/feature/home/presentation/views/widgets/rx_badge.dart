@@ -4,7 +4,7 @@ import 'package:smart_pharmacy/core/util/app_colors.dart';
 
 /// Coral "Rx Required" pill, shown when the medicine needs a prescription.
 class RxBadge extends StatelessWidget {
-  const RxBadge();
+  const RxBadge({super.key});
 
   @override
   Widget build(BuildContext context) {

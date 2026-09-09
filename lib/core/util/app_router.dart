@@ -23,7 +23,7 @@ import 'package:smart_pharmacy/feature/home/presentation/manger/ProductDetail/pr
 import 'package:smart_pharmacy/feature/home/presentation/manger/category/category_cubit.dart';
 import 'package:smart_pharmacy/feature/home/presentation/manger/Product/product_cubit.dart';
 import 'package:smart_pharmacy/feature/home/presentation/views/home_view.dart';
-import 'package:smart_pharmacy/feature/home/presentation/views/widgets/Product_details_consumer.dart';
+import 'package:smart_pharmacy/feature/home/presentation/views/widgets/product_details_consumer.dart';
 import 'package:smart_pharmacy/feature/order/presentation/manger/order/order_cubit.dart';
 import 'package:smart_pharmacy/feature/order/presentation/manger/order_detail.dart/cubit/order_detail_cubit.dart';
 import 'package:smart_pharmacy/feature/order/presentation/views/order_details_view.dart';
@@ -95,7 +95,9 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         settings: settings,
         builder: (_) => BlocProvider(
-          create: (context) => getIt<ProductDetailsCubit>()..fetchProductDetails(id: (settings.arguments as int)),
+          create: (context) =>
+              getIt<ProductDetailsCubit>()
+                ..fetchProductDetails(id: (settings.arguments as int)),
           child: const ProductDetailsConsumer(),
         ),
       );
@@ -137,17 +139,15 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
       );
     case CardPaymentRedirectView.routeName:
       final args = settings.arguments;
-      
+
       if (args is! Map) {
         return onGenerateRoute(const RouteSettings(name: HomeView.routeName));
       }
       return MaterialPageRoute(
         settings: settings,
-        builder: (_) =>  CardPaymentRedirectView(
-        
-          checkoutUrl: args['checkoutUrl'] as String ,
-          amount:(args['amount'] as num).toDouble(),
-
+        builder: (_) => CardPaymentRedirectView(
+          checkoutUrl: args['checkoutUrl'] as String,
+          amount: (args['amount'] as num).toDouble(),
         ),
       );
 
@@ -191,30 +191,33 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
           child: const OrderView(),
         ),
       );
-      case OrderDetailsView.routName:
+    case OrderDetailsView.routName:
       {
         final arg = settings.arguments;
         if (arg is! int) {
           return onGenerateRoute(const RouteSettings(name: HomeView.routeName));
         }
         return MaterialPageRoute(
-        settings: settings,
-        builder: (_) => BlocProvider(
-          create: (_) => getIt<OrderDetailCubit>(),
+          settings: settings,
+          builder: (_) => BlocProvider(
+            create: (_) => getIt<OrderDetailCubit>(),
             child: OrderDetailsView(idOrder: arg),
-        ),
-      );
+          ),
+        );
       }
 
     case PrescriptionStatusView.routName:
       {
-        // final arg = settings.arguments;
-        // if (arg is! int) {
-        //   return onGenerateRoute(const RouteSettings(name: HomeView.routeName));
-        // }
+        final arg = settings.arguments;
+        if (arg is! int) {
+          return onGenerateRoute(const RouteSettings(name: HomeView.routeName));
+        }
         return MaterialPageRoute(
           settings: settings,
-          builder: (_) => PrescriptionStatusView(),
+          builder: (_) => BlocProvider(
+            create: (context) =>  getIt<PrescriptionCubit>()..getOrderPrescriptions(id: arg),
+            child: PrescriptionStatusView(orderId: arg),
+          ),
         );
       }
 

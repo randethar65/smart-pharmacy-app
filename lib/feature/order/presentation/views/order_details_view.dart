@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_pharmacy/core/util/app_colors.dart';
+import 'package:smart_pharmacy/feature/Checkout/presentation/view/card_payment_redirect_view.dart';
 import 'package:smart_pharmacy/feature/Checkout/presentation/view/widget/header.dart';
 import 'package:smart_pharmacy/feature/order/presentation/manger/order_detail.dart/cubit/order_detail_cubit.dart';
 import 'package:smart_pharmacy/feature/order/presentation/widgets/order_details/order_action_bar.dart';
@@ -27,17 +28,28 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
     context.read<OrderDetailCubit>().fetchDetails(id: widget.idOrder);
   }
 
+  Future<void> _onState(BuildContext context, OrderDetailState state) async {
+    if (state is OrderDetailPayRedirect) {
+      await Navigator.pushNamed(
+        context,
+        CardPaymentRedirectView.routeName,
+        arguments: {'amount': state.amount, 'checkoutUrl': state.checkoutUrl},
+      );
+      // Back from the Stripe flow — refresh so the status is up to date.
+      if (context.mounted) {
+        context.read<OrderDetailCubit>().fetchDetails(id: widget.idOrder);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: const Header(title: 'Order Details'),
-      body: BlocBuilder<OrderDetailCubit, OrderDetailState>(
+      body: BlocConsumer<OrderDetailCubit, OrderDetailState>(
+        listener: _onState,
         builder: (context, state) {
-          if (state is OrderDetailInitial || state is OrderDetailLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
           if (state is OrderDetailFailure) {
             return Center(
               child: TextButton(
@@ -49,19 +61,24 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
             );
           }
 
-          final order = (state as OrderDetailSuccess).order;
-          return SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
-            child: Column(
-              children: [
-                OrderHeaderCard(order: order),
-                OrderStatusCard(order: order),
-                OrderItemsCard(order: order),
-                OrderDeliveryCard(order: order),
-                OrderPaymentCard(order: order),
-              ],
-            ),
-          );
+          if (state is OrderDetailSuccess) {
+            final order = state.order;
+            return SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+              child: Column(
+                children: [
+                  OrderHeaderCard(order: order),
+                  OrderStatusCard(order: order),
+                  OrderItemsCard(order: order),
+                  OrderDeliveryCard(order: order),
+                  OrderPaymentCard(order: order),
+                ],
+              ),
+            );
+          }
+
+          // Initial / Loading / PayRedirect
+          return const Center(child: CircularProgressIndicator());
         },
       ),
       bottomNavigationBar: BlocBuilder<OrderDetailCubit, OrderDetailState>(

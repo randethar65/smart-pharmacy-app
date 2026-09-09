@@ -12,7 +12,17 @@ final class OrderDetailSuccess extends OrderDetailState {
   OrderDetailSuccess(this.order);
 }
 
+/// Visa "Pay" — open the Stripe hosted page at [checkoutUrl].
+final class OrderDetailPayRedirect extends OrderDetailState {
+  final double amount;
+  final String checkoutUrl;
+  OrderDetailPayRedirect({required this.amount, required this.checkoutUrl});
+}
+
 final class OrderDetailFailure extends OrderDetailState {
   final String message;
   OrderDetailFailure(this.message);
 }
+
+
+

@@ -5,6 +5,7 @@ import 'package:smart_pharmacy/core/util/app_colors.dart';
 /// 6-box verification code input (pinput), themed for filled / focused / error.
 class CodeField extends StatelessWidget {
   const CodeField({
+    super.key,
     required this.controller,
     required this.hasError,
     required this.onChanged,

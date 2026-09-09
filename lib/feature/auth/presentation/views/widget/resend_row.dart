@@ -1,12 +1,11 @@
 
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:smart_pharmacy/core/util/app_colors.dart';
 
 /// "Resend code in 0:29" → tappable "Resend code" once the timer hits zero.
 class ResendRow extends StatelessWidget {
-  const ResendRow({required this.secondsLeft, required this.onResend});
+  const ResendRow({super.key, required this.secondsLeft, required this.onResend});
 
   final int secondsLeft;
   final VoidCallback onResend;

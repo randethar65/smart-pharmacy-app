@@ -8,7 +8,7 @@ import 'package:smart_pharmacy/feature/home/data/models/prodct_detail_model.dart
 
 /// Sticky footer: total + Add to Cart + (for Rx items) the prescription note.
 class BottomBar extends StatelessWidget {
-  const BottomBar({required this.product});
+  const BottomBar({super.key, required this.product});
 
   final Product product;
 

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_pharmacy/core/util/app_colors.dart';
-import 'package:smart_pharmacy/feature/order/data/Models/order_response.dart';
+import 'package:smart_pharmacy/feature/Checkout/presentation/view/upload_prescription_view.dart';
+import 'package:smart_pharmacy/feature/order/data/models/order_response.dart';
+import 'package:smart_pharmacy/feature/order/presentation/manger/order_detail.dart/cubit/order_detail_cubit.dart';
+import 'package:smart_pharmacy/feature/order/presentation/views/prescription_status_view.dart';
 
 /// Pinned bottom actions for the Order Details screen — shown only for the
 /// statuses that actually have something to do.
@@ -13,13 +17,39 @@ class OrderActionBar extends StatelessWidget {
   static const _cancelBg = Color(0xFFFDECEA);
   static const _cancelFg = Color(0xFFC0392B);
 
+  Future<void> _confirmCancel(BuildContext context) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Cancel order?'),
+        content: const Text(
+          'This cannot be undone. Your items will be released.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: _cancelFg),
+            child: const Text('Yes, cancel'),
+          ),
+        ],
+      ),
+    );
+    if (ok == true && context.mounted) {
+      context.read<OrderDetailCubit>().cancelOrder(id: order.id);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = order.orderStatus;
     final awaitingRx = s == 'AwaitingPrescription';
     final canPay = s == 'Pending';
     final canCancel = s == 'Pending' || s == 'AwaitingPrescription';
-    final hasRx = order.prescriptionsCount > 0 || awaitingRx;
+    final hasRx = order.prescriptionsCount > 0 ;
 
     if (!awaitingRx && !canPay && !canCancel && !hasRx) {
       return const SizedBox.shrink();
@@ -32,7 +62,8 @@ class OrderActionBar extends StatelessWidget {
           bg: AppColors.deepTeal,
           fg: Colors.white,
           onPressed: () {
-            // TODO: open prescription status screen for order.id
+         Navigator.pushNamed(context,PrescriptionStatusView.routName,
+         arguments: order.id);
           },
         ),
       if (canCancel)
@@ -40,9 +71,7 @@ class OrderActionBar extends StatelessWidget {
           label: 'Cancel Order',
           bg: _cancelBg,
           fg: _cancelFg,
-          onPressed: () {
-            // TODO: POST /api/Orders/{id}/cancel
-          },
+          onPressed: () => _confirmCancel(context),
         ),
     ];
 
@@ -70,18 +99,17 @@ class OrderActionBar extends StatelessWidget {
                   icon: Icons.upload_file,
                   bg: _coral,
                   onPressed: () {
-                    // TODO: Navigator.pushNamed(context,
-                    //   UploadPrescriptionView.routeName, arguments: {'orderId': order.id});
+               Navigator.pushNamed(context,
+                      UploadPrescriptionView.routeName, arguments: {'orderId': order.id});
                   },
                 )
               else if (canPay)
                 _PrimaryButton(
-                  label: 'Pay \$${order.total.toStringAsFixed(2)}',
-                  icon: Icons.credit_card,
-                  bg: AppColors.deepTeal,
-                  onPressed: () {
-                    // TODO: resume payment for order.id
-                  },
+                      label: 'Pay \$${order.total.toStringAsFixed(2)}',
+                      icon: Icons.credit_card,
+                      bg: AppColors.deepTeal,
+                  onPressed: () =>
+                      context.read<OrderDetailCubit>().payOrder(order),
                 ),
               if ((awaitingRx || canPay) && secondary.isNotEmpty)
                 const SizedBox(height: 10),

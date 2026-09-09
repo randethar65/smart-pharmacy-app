@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_pharmacy/core/util/app_colors.dart';
-import 'package:smart_pharmacy/feature/order/data/Models/order_response.dart';
+import 'package:smart_pharmacy/feature/order/data/models/order_response.dart';
 import 'package:smart_pharmacy/feature/order/presentation/widgets/order_details/detail_card.dart';
 
 /// "Delivery" card — map preview + the delivery address.

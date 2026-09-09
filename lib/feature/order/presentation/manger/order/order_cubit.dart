@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_pharmacy/feature/order/data/Models/order_response.dart';
+import 'package:smart_pharmacy/feature/order/data/models/order_response.dart';
 import 'package:smart_pharmacy/feature/order/domain/repos/order_repo.dart';
 
 part 'order_state.dart';

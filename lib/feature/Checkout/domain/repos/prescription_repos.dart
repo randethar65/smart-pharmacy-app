@@ -8,4 +8,7 @@ abstract class PrescriptionRepos {
   Future<Either<Failure, PrescriptionResponse>> uploadPrescription(
     PrescriptionRequest prescriptionRequest,
   );
+   Future<Either<Failure, List< PrescriptionResponse>>> getOrderPrescriptions(
+   {required int id}
+  );
 }

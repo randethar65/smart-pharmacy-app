@@ -91,6 +91,9 @@ Future<void> setup() async {
     () => OrderCubit(orderRepo: getIt<OrderRepo>()),
   );
    getIt.registerFactory<OrderDetailCubit>(
-    () => OrderDetailCubit(orderRepo: getIt<OrderRepo>()),
+    () => OrderDetailCubit(orderRepo: getIt<OrderRepo>(),
+    
+  checkoutRepos:  getIt<CheckoutRepos>()
+    ),
   );
 }
