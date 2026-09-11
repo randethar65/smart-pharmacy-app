@@ -6,10 +6,11 @@ import 'package:smart_pharmacy/feature/home/presentation/views/widgets/rx_badge.
 import 'package:smart_pharmacy/feature/home/presentation/views/widgets/sub_image_product.dart';
 
 class ProductDetailsView extends StatelessWidget {
-  const ProductDetailsView({super.key, required this.product});
+  const ProductDetailsView({super.key, required this.product, this.heroTag});
   static const routeName = '/product-details';
 
   final Product product;
+  final String? heroTag;
 
   bool get _inStock => product.stockQuantity > 0;
 
@@ -39,7 +40,7 @@ class ProductDetailsView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SubimageProduct(images: _images),
+            SubimageProduct(images: _images, heroTag: heroTag),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
               child: Column(

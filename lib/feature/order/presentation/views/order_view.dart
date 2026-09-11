@@ -6,6 +6,7 @@ import 'package:smart_pharmacy/feature/Checkout/presentation/view/widget/header.
 import 'package:smart_pharmacy/feature/order/presentation/manger/order/order_cubit.dart';
 import 'package:smart_pharmacy/feature/order/presentation/views/order_details_view.dart';
 import 'package:smart_pharmacy/feature/order/presentation/widgets/order_item.dart';
+import 'package:smart_pharmacy/feature/order/presentation/widgets/order_list_skeleton.dart';
 
 class OrderView extends StatefulWidget {
   const OrderView({super.key});
@@ -52,7 +53,7 @@ class _OrderViewState extends State<OrderView> {
             child: BlocBuilder<OrderCubit, OrderState>(
               builder: (context, state) {
                 if (state is OrderInitial || state is OrderLoading) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const OrderListSkeleton();
                 }
 
                 if (state is OrderFailure) {

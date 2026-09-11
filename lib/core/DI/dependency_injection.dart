@@ -27,6 +27,9 @@ import 'package:smart_pharmacy/feature/order/data/repos_Imple/order_repo_imple.d
 import 'package:smart_pharmacy/feature/order/domain/repos/order_repo.dart';
 import 'package:smart_pharmacy/feature/order/presentation/manger/order/order_cubit.dart';
 import 'package:smart_pharmacy/feature/order/presentation/manger/order_detail.dart/cubit/order_detail_cubit.dart';
+import 'package:smart_pharmacy/feature/profile/data/repos_imple/profile_repo_imple.dart';
+import 'package:smart_pharmacy/feature/profile/domain/repos/profile_repo.dart';
+import 'package:smart_pharmacy/feature/profile/presentation/manger/cubit/profile_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -56,6 +59,9 @@ Future<void> setup() async {
   );
   getIt.registerLazySingleton<OrderRepo>(
     () => OrderRepoImple(apiService: getIt<ApiService>()),
+  );
+  getIt.registerLazySingleton<ProfileRepo>(
+    () => ProfileRepoImple(apiService: getIt<ApiService>()),
   );
 
   // Cubits — نسخة جديدة كل مرة تُطلب
@@ -92,8 +98,11 @@ Future<void> setup() async {
   );
    getIt.registerFactory<OrderDetailCubit>(
     () => OrderDetailCubit(orderRepo: getIt<OrderRepo>(),
-    
+
   checkoutRepos:  getIt<CheckoutRepos>()
     ),
+  );
+  getIt.registerFactory<ProfileCubit>(
+    () => ProfileCubit(profileRepo: getIt<ProfileRepo>()),
   );
 }

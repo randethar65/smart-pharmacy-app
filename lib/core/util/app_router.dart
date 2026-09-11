@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_pharmacy/core/DI/dependency_injection.dart';
+import 'package:smart_pharmacy/core/util/app_page_route.dart';
 import 'package:smart_pharmacy/feature/Checkout/presentation/manger/checkout/checkout_cubit.dart';
 import 'package:smart_pharmacy/feature/Checkout/presentation/view/card_payment_redirect_view.dart';
 import 'package:smart_pharmacy/feature/Checkout/presentation/view/checkout_view.dart';
@@ -19,6 +20,7 @@ import 'package:smart_pharmacy/feature/auth/presentation/views/login_view.dart';
 import 'package:smart_pharmacy/feature/auth/presentation/views/register_view.dart';
 import 'package:smart_pharmacy/feature/auth/presentation/views/reset_password.dart';
 import 'package:smart_pharmacy/feature/cart/presentation/views/cart_view.dart';
+import 'package:smart_pharmacy/feature/home/data/models/product_model.dart';
 import 'package:smart_pharmacy/feature/home/presentation/manger/ProductDetail/product_details_cubit.dart';
 import 'package:smart_pharmacy/feature/home/presentation/manger/category/category_cubit.dart';
 import 'package:smart_pharmacy/feature/home/presentation/manger/Product/product_cubit.dart';
@@ -29,11 +31,15 @@ import 'package:smart_pharmacy/feature/order/presentation/manger/order_detail.da
 import 'package:smart_pharmacy/feature/order/presentation/views/order_details_view.dart';
 import 'package:smart_pharmacy/feature/order/presentation/views/order_view.dart';
 import 'package:smart_pharmacy/feature/order/presentation/views/prescription_status_view.dart';
+import 'package:smart_pharmacy/feature/profile/data/models/my_profile_response.dart';
+import 'package:smart_pharmacy/feature/profile/presentation/manger/cubit/profile_cubit.dart';
+import 'package:smart_pharmacy/feature/profile/presentation/views/edit_profile_view.dart';
+import 'package:smart_pharmacy/feature/profile/presentation/views/profile_view.dart';
 
 Route<dynamic>? onGenerateRoute(RouteSettings settings) {
   switch (settings.name) {
     case LoginView.routeName:
-      return MaterialPageRoute(
+      return AppPageRoute(
         settings: settings,
         builder: (_) => BlocProvider(
           create: (_) => getIt<LoginCubit>(),
@@ -42,7 +48,7 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
       );
 
     case RegisterView.routeName:
-      return MaterialPageRoute(
+      return AppPageRoute(
         settings: settings,
         builder: (_) => BlocProvider(
           create: (_) => getIt<RegisterCubit>(),
@@ -51,13 +57,13 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
       );
 
     case CheckEmailView.routeName:
-      return MaterialPageRoute(
+      return AppPageRoute(
         settings: settings,
         builder: (_) => const CheckEmailView(),
       );
 
     case ForgetPasswordView.routeName:
-      return MaterialPageRoute(
+      return AppPageRoute(
         settings: settings,
         builder: (_) => BlocProvider(
           create: (_) => getIt<ForgetPasswordCubit>(),
@@ -66,7 +72,7 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
       );
     //عشان arguments توصل لازم onGenerateRoute يمرّر الـ settings نفسها للـ MaterialPageRoute
     case ResetPasswordView.routeName:
-      return MaterialPageRoute(
+      return AppPageRoute(
         settings: settings,
         builder: (_) => BlocProvider(
           create: (_) => getIt<ForgetPasswordCubit>(),
@@ -75,7 +81,7 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
       );
 
     case HomeView.routeName:
-      return MaterialPageRoute(
+      return AppPageRoute(
         settings: settings,
         builder: (_) => MultiBlocProvider(
           providers: [
@@ -92,24 +98,27 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
         ),
       );
     case ProductDetailsConsumer.routeName:
-      return MaterialPageRoute(
+      final args = settings.arguments;
+      if (args is! ProductModel) {
+        return onGenerateRoute(const RouteSettings(name: HomeView.routeName));
+      }
+      return AppPageRoute(
         settings: settings,
         builder: (_) => BlocProvider(
           create: (context) =>
-              getIt<ProductDetailsCubit>()
-                ..fetchProductDetails(id: (settings.arguments as int)),
-          child: const ProductDetailsConsumer(),
+              getIt<ProductDetailsCubit>()..fetchProductDetails(id: args.id),
+          child: ProductDetailsConsumer(initial: args),
         ),
       );
 
     case CartView.routeName:
       // CartCubit is provided app-wide in main.dart — no BlocProvider here.
-      return MaterialPageRoute(
+      return AppPageRoute(
         settings: settings,
         builder: (_) => const CartView(),
       );
     case CheckoutView.routName:
-      return MaterialPageRoute(
+      return AppPageRoute(
         settings: settings,
         builder: (_) => BlocProvider(
           create: (_) => getIt<CheckoutCubit>(),
@@ -124,7 +133,7 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
       if (args is! Map) {
         return onGenerateRoute(const RouteSettings(name: HomeView.routeName));
       }
-      return MaterialPageRoute(
+      return AppPageRoute(
         settings: settings,
         builder: (_) => OrderPlacedSuccess(
           orderId: args['orderId'] as int,
@@ -133,7 +142,7 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
       );
 
     case PaymentSuccessView.routeName:
-      return MaterialPageRoute(
+      return AppPageRoute(
         settings: settings,
         builder: (_) => const PaymentSuccessView(),
       );
@@ -143,7 +152,7 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
       if (args is! Map) {
         return onGenerateRoute(const RouteSettings(name: HomeView.routeName));
       }
-      return MaterialPageRoute(
+      return AppPageRoute(
         settings: settings,
         builder: (_) => CardPaymentRedirectView(
           checkoutUrl: args['checkoutUrl'] as String,
@@ -152,7 +161,7 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
       );
 
     case PaymentCancelledView.routeName:
-      return MaterialPageRoute(
+      return AppPageRoute(
         settings: settings,
         builder: (_) => const PaymentCancelledView(),
       );
@@ -163,7 +172,7 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
         if (args is! Map) {
           return onGenerateRoute(const RouteSettings(name: HomeView.routeName));
         }
-        return MaterialPageRoute(
+        return AppPageRoute(
           settings: settings,
           builder: (_) => RxRequiredView(orderId: args['orderId'] as int),
         );
@@ -175,7 +184,7 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
         if (args is! Map) {
           return onGenerateRoute(const RouteSettings(name: HomeView.routeName));
         }
-        return MaterialPageRoute(
+        return AppPageRoute(
           settings: settings,
           builder: (_) => BlocProvider(
             create: (_) => getIt<PrescriptionCubit>(),
@@ -184,7 +193,7 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
         );
       }
     case OrderView.routName:
-      return MaterialPageRoute(
+      return AppPageRoute(
         settings: settings,
         builder: (_) => BlocProvider(
           create: (_) => getIt<OrderCubit>(),
@@ -197,7 +206,7 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
         if (arg is! int) {
           return onGenerateRoute(const RouteSettings(name: HomeView.routeName));
         }
-        return MaterialPageRoute(
+        return AppPageRoute(
           settings: settings,
           builder: (_) => BlocProvider(
             create: (_) => getIt<OrderDetailCubit>(),
@@ -212,7 +221,7 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
         if (arg is! int) {
           return onGenerateRoute(const RouteSettings(name: HomeView.routeName));
         }
-        return MaterialPageRoute(
+        return AppPageRoute(
           settings: settings,
           builder: (_) => BlocProvider(
             create: (context) =>  getIt<PrescriptionCubit>()..getOrderPrescriptions(id: arg),
@@ -221,6 +230,29 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
         );
       }
 
+    case ProfileView.routeName:
+      return AppPageRoute(
+        settings: settings,
+        builder: (_) => BlocProvider(
+          create: (_) => getIt<ProfileCubit>()..getMyProfile(),
+          child: const ProfileView(),
+        ),
+      );
+      case EditProfileView.routeName:
+{
+  final arg = settings.arguments;
+        if (arg is! MyProfileResponse) {
+          return onGenerateRoute(const RouteSettings(name: HomeView.routeName));
+        }
+
+   return AppPageRoute(
+        settings: settings,
+        builder: (_) => BlocProvider(
+          create: (_) => getIt<ProfileCubit>(),
+          child:  EditProfileView(profile: arg,),
+        ),
+      );
+}
     default:
       return null;
   }

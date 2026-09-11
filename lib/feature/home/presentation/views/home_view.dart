@@ -18,6 +18,7 @@ import 'package:smart_pharmacy/feature/home/presentation/views/widgets/products_
 import 'package:smart_pharmacy/feature/home/presentation/views/widgets/products_grid_skeleton.dart';
 import 'package:smart_pharmacy/feature/home/presentation/views/widgets/search_text_form_filed.dart';
 import 'package:smart_pharmacy/feature/order/presentation/views/order_view.dart';
+import 'package:smart_pharmacy/feature/profile/presentation/views/profile_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -40,16 +41,15 @@ class _HomeViewState extends State<HomeView> {
       Navigator.pushNamed(context, CartView.routeName);
       return;
     }
-    if(index == 2){
- Navigator.pushNamed(context, OrderView.routName);
+    if (index == 2) {
+      Navigator.pushNamed(context, OrderView.routName);
+      return;
+    }
+    if (index == 3) {
+      Navigator.pushNamed(context, ProfileView.routeName);
       return;
     }
     setState(() => _currentTab = index);
-    if (index != 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Coming soon')),
-      );
-    }
   }
 
   Future<void> _logout(BuildContext context) async {

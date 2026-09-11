@@ -8,11 +8,12 @@ class AppColors {
   static const Color primarySurface= Color(0xFFF0FDFA);
   static const Color accent        = Color(0xFFFE7766); 
 static const Color lightPink = Color(0xFFFFDAD6);
-  // warm coral — Rx badge
+  // warm coral — Rx badge   
     static const Color accentText        = Color(0xFF710E09); 
   static const Color infoSurface   = Color(0xFFF1F5F9); 
- 
+static const Color infoBackground = Color(0xFFE5EEFF);
     static const Color blue   = Color(0xFFDCE9FF); 
+     static const Color badgeColor        = Color(0xFFA8372B);
 
   // Neutrals
   static const Color ink           = Color(0xFF3E4947); // Figma body/heading text

@@ -54,21 +54,24 @@ class ProductItem extends StatelessWidget {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: SizedBox.expand(
-                        child: Image.network(
-                          product.image ?? "",
-                          height: 141,
-                          width: 141,
-                    fit: BoxFit.cover,
-                          loadingBuilder: (context, child, progress) {
-                            if (progress == null) return child;
-                            return const ColoredBox(color: AppColors.field);
-                          },
-                          errorBuilder: (context, error, stack) => const ColoredBox(
-                            color: AppColors.field,
-                            child: Icon(
-                              Icons.medication_outlined,
-                              color: AppColors.textSecondary,
+                      child: Hero(
+                        tag: 'product-image-${product.id}',
+                        child: SizedBox.expand(
+                          child: Image.network(
+                            product.image ?? "",
+                            height: 141,
+                            width: 141,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, progress) {
+                              if (progress == null) return child;
+                              return const ColoredBox(color: AppColors.field);
+                            },
+                            errorBuilder: (context, error, stack) => const ColoredBox(
+                              color: AppColors.field,
+                              child: Icon(
+                                Icons.medication_outlined,
+                                color: AppColors.textSecondary,
+                              ),
                             ),
                           ),
                         ),
