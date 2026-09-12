@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_pharmacy/core/util/app_colors.dart';
 import 'package:smart_pharmacy/core/util/session.dart';
 import 'package:smart_pharmacy/feature/Checkout/presentation/view/widget/header.dart';
+import 'package:smart_pharmacy/feature/Notification/presentation/manger/cubit/notification_cubit.dart';
+import 'package:smart_pharmacy/feature/Notification/presentation/views/notification_view.dart';
 import 'package:smart_pharmacy/feature/order/presentation/views/order_view.dart';
 import 'package:smart_pharmacy/feature/profile/presentation/manger/cubit/profile_cubit.dart';
 import 'package:smart_pharmacy/feature/profile/presentation/views/widgets/language_toggle.dart';
@@ -97,13 +99,15 @@ class ProfileView extends StatelessWidget {
                 label: 'My Orders',
                 onTap: () => Navigator.pushNamed(context, OrderView.routName),
               ),
-              ProfileMenuTile(
-                icon: Icons.notifications_none,
-                label: 'Notifications',
-                showDot: true,
-                onTap: () {
-                  // TODO: push NotificationsView
-                },
+              ValueListenableBuilder<int>(
+                valueListenable: context.read<NotificationCubit>().unreadCount,
+                builder: (context, count, _) => ProfileMenuTile(
+                  icon: Icons.notifications_none,
+                  label: 'Notifications',
+                  showDot: count > 0,
+                  onTap: () =>
+                      Navigator.pushNamed(context, NotificationView.routName),
+                ),
               ),
               const ProfileMenuTile(
                 icon: Icons.language,

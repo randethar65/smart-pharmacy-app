@@ -24,4 +24,6 @@ class ApiConstants {
   static const String cancelOrder = "/api/Orders"; // + "/{id}/cancel"
      static const String getMyProfile="/api/Profile";
        static const String updateMyProfile="/api/Profile";
+  static const String notifications =
+      "/api/Notifications"; // + "/unread-count", "/{id}/read", "/read-all"
 }

@@ -11,6 +11,8 @@ import 'package:smart_pharmacy/feature/Checkout/presentation/view/payment_succes
 import 'package:smart_pharmacy/feature/Checkout/presentation/view/rx_required_view.dart';
 import 'package:smart_pharmacy/feature/Checkout/presentation/manger/prescription/cubit/prescription_cubit.dart';
 import 'package:smart_pharmacy/feature/Checkout/presentation/view/upload_prescription_view.dart';
+import 'package:smart_pharmacy/feature/Notification/presentation/manger/cubit/notification_cubit.dart';
+import 'package:smart_pharmacy/feature/Notification/presentation/views/notification_view.dart';
 import 'package:smart_pharmacy/feature/auth/presentation/manger/forget_password/forget_password_cubit.dart';
 import 'package:smart_pharmacy/feature/auth/presentation/manger/login/login_cubit.dart';
 import 'package:smart_pharmacy/feature/auth/presentation/manger/register/register_cubit.dart';
@@ -35,9 +37,16 @@ import 'package:smart_pharmacy/feature/profile/data/models/my_profile_response.d
 import 'package:smart_pharmacy/feature/profile/presentation/manger/cubit/profile_cubit.dart';
 import 'package:smart_pharmacy/feature/profile/presentation/views/edit_profile_view.dart';
 import 'package:smart_pharmacy/feature/profile/presentation/views/profile_view.dart';
+import 'package:smart_pharmacy/feature/splash/presentation/views/splash_view.dart';
 
 Route<dynamic>? onGenerateRoute(RouteSettings settings) {
   switch (settings.name) {
+    case SplashView.routeName:
+      return AppPageRoute(
+        settings: settings,
+        builder: (_) => const SplashView(),
+      );
+
     case LoginView.routeName:
       return AppPageRoute(
         settings: settings,
@@ -81,6 +90,10 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
       );
 
     case HomeView.routeName:
+      // Refresh the Profile badge's count every time the user lands here —
+      // covers both a fresh app launch (already logged in) and right after
+      // login, without needing a dedicated "user just logged in" hook.
+      getIt<NotificationCubit>().fetchUnreadCount();
       return AppPageRoute(
         settings: settings,
         builder: (_) => MultiBlocProvider(
@@ -113,10 +126,7 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
 
     case CartView.routeName:
       // CartCubit is provided app-wide in main.dart — no BlocProvider here.
-      return AppPageRoute(
-        settings: settings,
-        builder: (_) => const CartView(),
-      );
+      return AppPageRoute(settings: settings, builder: (_) => const CartView());
     case CheckoutView.routName:
       return AppPageRoute(
         settings: settings,
@@ -224,7 +234,8 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
         return AppPageRoute(
           settings: settings,
           builder: (_) => BlocProvider(
-            create: (context) =>  getIt<PrescriptionCubit>()..getOrderPrescriptions(id: arg),
+            create: (context) =>
+                getIt<PrescriptionCubit>()..getOrderPrescriptions(id: arg),
             child: PrescriptionStatusView(orderId: arg),
           ),
         );
@@ -238,21 +249,31 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
           child: const ProfileView(),
         ),
       );
-      case EditProfileView.routeName:
-{
-  final arg = settings.arguments;
+    case EditProfileView.routeName:
+      {
+        final arg = settings.arguments;
         if (arg is! MyProfileResponse) {
           return onGenerateRoute(const RouteSettings(name: HomeView.routeName));
         }
 
-   return AppPageRoute(
-        settings: settings,
-        builder: (_) => BlocProvider(
-          create: (_) => getIt<ProfileCubit>(),
-          child:  EditProfileView(profile: arg,),
-        ),
-      );
-}
+        return AppPageRoute(
+          settings: settings,
+          builder: (_) => BlocProvider(
+            create: (_) => getIt<ProfileCubit>(),
+            child: EditProfileView(profile: arg),
+          ),
+        );
+      }
+          case NotificationView.routName:
+        // NotificationCubit is provided app-wide in main.dart — no
+        // BlocProvider here, or leaving this screen would close the
+        // singleton (same reasoning as CartView above).
+        getIt<NotificationCubit>().fetchNotifications();
+        return AppPageRoute(
+          settings: settings,
+          builder: (_) => const NotificationView(),
+        );
+
     default:
       return null;
   }

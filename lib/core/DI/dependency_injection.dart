@@ -27,6 +27,9 @@ import 'package:smart_pharmacy/feature/order/data/repos_Imple/order_repo_imple.d
 import 'package:smart_pharmacy/feature/order/domain/repos/order_repo.dart';
 import 'package:smart_pharmacy/feature/order/presentation/manger/order/order_cubit.dart';
 import 'package:smart_pharmacy/feature/order/presentation/manger/order_detail.dart/cubit/order_detail_cubit.dart';
+import 'package:smart_pharmacy/feature/Notification/data/repos_imple/notification_repo_imple.dart';
+import 'package:smart_pharmacy/feature/Notification/domain/repos/notification_repo.dart';
+import 'package:smart_pharmacy/feature/Notification/presentation/manger/cubit/notification_cubit.dart';
 import 'package:smart_pharmacy/feature/profile/data/repos_imple/profile_repo_imple.dart';
 import 'package:smart_pharmacy/feature/profile/domain/repos/profile_repo.dart';
 import 'package:smart_pharmacy/feature/profile/presentation/manger/cubit/profile_cubit.dart';
@@ -62,6 +65,9 @@ Future<void> setup() async {
   );
   getIt.registerLazySingleton<ProfileRepo>(
     () => ProfileRepoImple(apiService: getIt<ApiService>()),
+  );
+  getIt.registerLazySingleton<NotificationRepo>(
+    () => NotificationRepoImple(apiService: getIt<ApiService>()),
   );
 
   // Cubits — نسخة جديدة كل مرة تُطلب
@@ -104,5 +110,10 @@ Future<void> setup() async {
   );
   getIt.registerFactory<ProfileCubit>(
     () => ProfileCubit(profileRepo: getIt<ProfileRepo>()),
+  );
+  // Singleton: ProfileView's badge and NotificationView's list must share
+  // the same unreadCount, same as CartCubit above.
+  getIt.registerLazySingleton<NotificationCubit>(
+    () => NotificationCubit(notificationRepo: getIt<NotificationRepo>()),
   );
 }

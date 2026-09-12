@@ -6,13 +6,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:smart_pharmacy/core/DI/dependency_injection.dart';
 import 'package:smart_pharmacy/core/service/dio_factory.dart';
 import 'package:smart_pharmacy/core/util/app_colors.dart';
+import 'package:smart_pharmacy/feature/Notification/presentation/manger/cubit/notification_cubit.dart';
+import 'package:smart_pharmacy/feature/Notification/presentation/views/notification_view.dart';
 import 'package:smart_pharmacy/feature/auth/domain/repos/auth_repos.dart';
 import 'package:smart_pharmacy/feature/auth/presentation/views/login_view.dart';
 import 'package:smart_pharmacy/feature/cart/presentation/views/cart_view.dart';
-import 'package:smart_pharmacy/feature/home/data/models/category_model.dart';
-import 'package:smart_pharmacy/feature/home/presentation/manger/category/category_cubit.dart';
+
 import 'package:smart_pharmacy/feature/home/presentation/manger/Product/product_cubit.dart';
-import 'package:smart_pharmacy/feature/home/presentation/views/widgets/categories_row.dart';
+import 'package:smart_pharmacy/feature/home/presentation/views/widgets/category_filter_section.dart';
 import 'package:smart_pharmacy/feature/home/presentation/views/widgets/nav_widget.dart';
 import 'package:smart_pharmacy/feature/home/presentation/views/widgets/products_grid.dart';
 import 'package:smart_pharmacy/feature/home/presentation/views/widgets/products_grid_skeleton.dart';
@@ -29,9 +30,6 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  /// Prepended locally — the backend has no "All" category of its own.
-  static final _allCategory = CategoryModel(id: -1, name: 'All');
-
   int _currentTab = 0;
 
   void _onTabTap(int index) {
@@ -79,10 +77,33 @@ class _HomeViewState extends State<HomeView> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        leading: SvgPicture.asset(
-          'assets/svgs/Button.svg',
-          width: 34,
-          height: 44,
+        leading: Center(
+          // بدون Center، AppBar.leading بيفرض عرض 56px على الـ Badge، فنقطة
+          // الإشعار (Positioned) بتتموضع نسبة لهالـ 56px مش نسبة للأيقونة
+          // الفعلية (16px) — فبتطلع بعيدة عنها.
+          child: ValueListenableBuilder<int>(
+            valueListenable: context.read<NotificationCubit>().unreadCount,
+            builder: (context, count, _) {
+              return GestureDetector(
+                onTap: () =>
+                    Navigator.pushNamed(context, NotificationView.routName),
+                // isLabelVisible يتحكم بالنقطة بس — الجرس (child) يضل ظاهر
+                // دايمًا، بعكس تغليف الـ Badge كلها بـ Visibility.
+                child: Badge(
+                  isLabelVisible: count > 0,
+                  smallSize: 8,
+                  largeSize: 10,
+                  
+                  backgroundColor: AppColors.badgeColor,
+                  child: SvgPicture.asset(
+                    'assets/svgs/notef.svg',
+                    width: 16,
+                    height: 20,
+                  ),
+                ),
+              );
+            },
+          ),
         ),
         actions: [
           IconButton(
@@ -101,50 +122,7 @@ class _HomeViewState extends State<HomeView> {
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 child: SearchTextFormField(),
               ),
-              BlocBuilder<CategoryCubit, CategoryState>(
-                builder: (context, state) {
-                  if (state is CategoryFailure) {
-                    return SizedBox(
-                      height: 40,
-                      child: Center(
-                        child: TextButton(
-                          onPressed: () =>
-                              context.read<CategoryCubit>().fetchCategories(),
-                          child: Text('${state.errorMessage} — Tap to retry'),
-                        ),
-                      ),
-                    );
-                  }
-
-                  final categories = state is CategorySucess
-                      ? [_allCategory, ...state.categories]
-                      : [_allCategory];
-
-                  return Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      CategoriesRow(
-                        categories: categories,
-                        onSelected: (category) {
-                          context.read<ProductCubit>().fetchProducts(
-                                categoryId:
-                                    category.id == -1 ? null : category.id,
-                              );
-                        },
-                      ),
-                      if (state is CategoryLoading || state is CategoryInitial)
-                        const Positioned(
-                          right: 20,
-                          child: SizedBox(
-                            height: 16,
-                            width: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                        ),
-                    ],
-                  );
-                },
-              ),
+              const CategoryFilterSection(),
               BlocConsumer<ProductCubit, ProductState>(
                 listener: (context, state) {
                   if (state is ProductFailure) {
@@ -172,6 +150,23 @@ class _HomeViewState extends State<HomeView> {
                   }
 
                   final products = (state as ProductSuccess).result.products;
+
+                  if (products.isEmpty) {
+                    return const SizedBox(
+                      height: 300,
+                      child: Center(
+                        child: Text(
+                          'No products in this category',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 14,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
                   return ProductsGrid(items: products);
                 },
               ),

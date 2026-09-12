@@ -1,0 +1,14 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="pillShape">
+      <rect x="56" y="176" width="400" height="160" rx="80" ry="80"/>
+    </clipPath>
+  </defs>
+  <g transform="rotate(45 256 256)">
+    <g clip-path="url(#pillShape)">
+      <rect x="56" y="176" width="200" height="160" fill="#FE7766"/>
+      <rect x="256" y="176" width="200" height="160" fill="#FFFFFF"/>
+    </g>
+    <ellipse cx="150" cy="205" rx="26" ry="9" fill="#FFFFFF" opacity="0.55" transform="rotate(18 150 205)"/>
+  </g>
+</svg>

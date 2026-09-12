@@ -36,7 +36,7 @@ class MyAddressWidget extends StatelessWidget {
                     height: 15,
                     width: 12,
                   ),
-                  backgroundColor: const Color.fromARGB(255, 188, 231, 228),
+                  backgroundColor:  AppColors.deepTeal.withValues(alpha: 0.15),
                 ),
                 const SizedBox(width: 8),
                 const Text(

@@ -11,6 +11,7 @@ abstract class ProductRepos {
     String? search,
   });
  Future<Either<Failure, Product>> getProduct({required int id});
+ 
 }
 
 

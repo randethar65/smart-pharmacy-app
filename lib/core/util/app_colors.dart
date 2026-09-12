@@ -14,7 +14,7 @@ static const Color lightPink = Color(0xFFFFDAD6);
 static const Color infoBackground = Color(0xFFE5EEFF);
     static const Color blue   = Color(0xFFDCE9FF); 
      static const Color badgeColor        = Color(0xFFA8372B);
-
+  
   // Neutrals
   static const Color ink           = Color(0xFF3E4947); // Figma body/heading text
   static const Color textPrimary   = Color(0xFF0B1C30);
